@@ -3,8 +3,9 @@
 
 import yaml
 
+
 class BundleManifest:
-    '''
+    """
     A BundleManifest is an immutable view of the outputs from a assemble step
     The manifest contains information about the bundle that was built (in the `assemble` section),
     and the components that made up the bundle in the `components` section.
@@ -22,7 +23,7 @@ class BundleManifest:
             ref: git ref that was built (sha, branch, or tag)
             commit_id: The actual git commit ID that was built (i.e. the resolved "ref")
             location: /relative/path/to/artifact
-    '''
+    """
 
     @staticmethod
     def from_file(file):
