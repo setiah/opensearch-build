@@ -65,17 +65,18 @@ def main():
     args = parse_arguments()
     manifest = BundleManifest.from_file(args.manifest)
     print("Reading manifest file: %s" % args.manifest)
-    pull_common_dependencies(manifest)
-    # with TemporaryDirectory(keep=args.keep) as work_dir:
-    #     os.chdir(work_dir)
-    #
-    #     # For each component, check out the git repo and run `integtest.sh`
-    #     for component in manifest.components:
-    #         if not is_component_test_supported(component):
-    #             print('Skipping tests for %s, as it is currently not supported' % component.name)
-    #             continue
+    # pull_common_dependencies(manifest)
+    with TemporaryDirectory(keep=args.keep) as work_dir:
+        # Sample work_dir: /var/folders/d7/643j7dbj2yj0mq170_dpb621mwrhf4/T/tmpk17tk8li
+        os.chdir(work_dir)
+
+        # For each component, check out the git repo and run `integtest.sh`
+        for component in manifest.components:
+            if not is_component_test_supported(component):
+                print('Skipping tests for %s, as it is currently not supported' % component.name)
+                continue
     #         pull_dependencies(component)
-    #         run_component_tests(manifest, component, work_dir)
+            run_component_tests(manifest, component, work_dir)
 
         # TODO: Store test results, send notification.
 

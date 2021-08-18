@@ -9,9 +9,14 @@ class LocalTestCluster:
         self.manifest = bundle_manifest
         self.work_dir = tempfile.TemporaryDirectory()
 
+    def override_location(self):
+        self.manifest.build.location = 'file:///Users/setiah/projects/odfe/opensearch-build/test/resources/opensearch-1.0.0-linux-x64.tar.gz'
+
     def create(self):
         print(f'Creating local test cluster in {self.work_dir.name}')
         os.chdir(self.work_dir.name)
+        #TODO: remove once we have the logic to copy artifacts from s3
+        self.override_location()
         print(f'Downloading bundle from {self.manifest.build.location}')
         urllib.request.urlretrieve(self.manifest.build.location, 'bundle.tgz')
         print(f'Downloaded bundle to {os.path.realpath("bundle.tgz")}')
