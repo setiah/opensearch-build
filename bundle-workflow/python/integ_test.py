@@ -18,12 +18,13 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-
+#TODO: wip
 def _get_opensearch_component(manifest):
     for component in manifest.components:
         if component.name == 'OpenSearch':
             return component
 
+#TODO: wip
 def pull_common_dependencies(manifest):
     opensearch_component = _get_opensearch_component(manifest)
     opensearch_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
@@ -32,6 +33,7 @@ def pull_common_dependencies(manifest):
     jobscheduler_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
     notifications_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
 
+#TODO: wip
 def pull_dependencies(component, work_dir):
     """
     TODO
