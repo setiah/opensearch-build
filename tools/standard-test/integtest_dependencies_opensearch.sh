@@ -42,17 +42,17 @@ if [ "$1" = "opensearch" ]
 then
     if [ -z "$3" ]
     then
-        ./gradlew publishToMavenLocal -Dbuild.snapshot=false --console=plain
+        ./gradlew publishToMavenLocal -Dbuild.snapshot=true --console=plain
     else
-        ./gradlew publishToMavenLocal -Dbuild.version_qualifier=$3 -Dbuild.snapshot=false --console=plain
+        ./gradlew publishToMavenLocal -Dbuild.version_qualifier=$3 -Dbuild.snapshot=true --console=plain
     fi
 elif [ "$1" = "common-utils" ]
 then
-        ./gradlew publishToMavenLocal -Dopensearch.version=$REVISION -Dbuild.snapshot=false --console=plain
+        ./gradlew publishToMavenLocal -Dopensearch.version=$REVISION -Dbuild.snapshot=true --console=plain
 elif [ "$1" = "job-scheduler" ]
 then
-   ./gradlew publishToMavenLocal -Dopensearch.version=$REVISION -Dbuild.snapshot=false --console=plain
-   ./gradlew assemble -Dopensearch.version=$REVISION -Dbuild.snapshot=false
+   ./gradlew publishToMavenLocal -Dopensearch.version=$REVISION -Dbuild.snapshot=true --console=plain
+   ./gradlew assemble -Dopensearch.version=$REVISION -Dbuild.snapshot=true
 
     echo "Creating ../src/test/resources/job-scheduler ..."
     mkdir -p ../src/test/resources/job-scheduler
@@ -65,5 +65,5 @@ then
     ls ../src/test/resources/job-scheduler
 elif [ "$1" = "alerting" ]
 then
-    ./gradlew :alerting-notification:publishToMavenLocal -Dopensearch.version=$REVISION -Dbuild.snapshot=false --console=plain
+    ./gradlew :alerting-notification:publishToMavenLocal -Dopensearch.version=$REVISION -Dbuild.snapshot=true --console=plain
 fi
