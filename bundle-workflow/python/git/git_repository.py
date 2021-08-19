@@ -27,7 +27,8 @@ class GitRepository:
         # Check out the repository
         self.execute(f'git init', True)
         self.execute(f'git remote add origin {self.url}', True)
-        self.execute(f'git fetch --depth 1 origin {self.ref}', True)
+        self.execute(f'git fetch --depth 1 origin main', True)
+        # self.execute(f'git fetch --depth 1 origin {self.ref}', True)
         self.execute(f'git checkout FETCH_HEAD', True)
         self.sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd = self.dir).decode().strip()
         print(f'Checked out {self.url}@{self.ref} into {self.dir} at {self.sha}')

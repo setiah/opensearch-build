@@ -10,6 +10,17 @@ from test_workflow.test_cluster import LocalTestCluster
 from test_workflow.integ_test_suite import IntegTestSuite
 from system.temporary_directory import TemporaryDirectory
 
+DEPENDENCY_VERSION = '1.0'
+common_dependencies = [
+    'opensearch',
+    'opensearch-build',
+    'common-utils',
+    'job-scheduler',
+    'alerting'
+]
+
+def _get_dependency_repo(dep_name):
+    pass
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description = "Test an OpenSearch Bundle")
@@ -25,13 +36,11 @@ def _get_opensearch_component(manifest):
             return component
 
 #TODO: wip
-def pull_common_dependencies(manifest):
-    opensearch_component = _get_opensearch_component(manifest)
-    opensearch_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
-    build_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
-    commonutils_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
-    jobscheduler_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
-    notifications_repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
+def pull_common_dependencies(manifest, work_dir):
+    for dependency in common_dependencies:
+        GitRepository(_get_dependency_repo(dependency), DEPENDENCY_VERSION, os.path.join(work_dir, dependency))
+        #TODO: add the logic for copying dependencies in maven local
+        pass
 
 #TODO: wip
 def pull_dependencies(component, work_dir):
@@ -49,13 +58,15 @@ def is_component_test_supported(component):
         return False
 
 
-def run_component_tests(manifest, component, work_dir):
+def run_plugin_integtests(manifest, component, work_dir):
     try:
         # Spin up a test cluster
         cluster = LocalTestCluster(manifest)
         cluster.create()
-        print(component.name)
-        repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
+        print("plugin name: " + component.name)
+        #TODO: (Create issue) Since plugins don't have integtest.sh in version branch, hardcoded it to main
+        #repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
+        repo = GitRepository(component.repository, 'main', os.path.join(work_dir, component.name))
         test_suite = IntegTestSuite(component.name, repo)
         test_suite.execute(cluster)
     finally:
@@ -67,18 +78,17 @@ def main():
     args = parse_arguments()
     manifest = BundleManifest.from_file(args.manifest)
     print("Reading manifest file: %s" % args.manifest)
-    # pull_common_dependencies(manifest)
     with TemporaryDirectory(keep=args.keep) as work_dir:
         # Sample work_dir: /var/folders/d7/643j7dbj2yj0mq170_dpb621mwrhf4/T/tmpk17tk8li
         os.chdir(work_dir)
-
+        # pull_common_dependencies(manifest, work_dir)
         # For each component, check out the git repo and run `integtest.sh`
         for component in manifest.components:
             if not is_component_test_supported(component):
                 print('Skipping tests for %s, as it is currently not supported' % component.name)
                 continue
     #         pull_dependencies(component)
-            run_component_tests(manifest, component, work_dir)
+            run_plugin_integtests(manifest, component, work_dir)
 
         # TODO: Store test results, send notification.
 
