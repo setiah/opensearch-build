@@ -26,6 +26,7 @@ class GitRepository:
 
         # Check out the repository
         self.execute(f'git init', True)
+        print("Git repo url: " + self.url + " ref: " + self.ref)
         self.execute(f'git remote add origin {self.url}', True)
         self.execute(f'git fetch --depth 1 origin main', True)
         # self.execute(f'git fetch --depth 1 origin {self.ref}', True)
