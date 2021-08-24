@@ -5,9 +5,9 @@ import shutil
 import subprocess
 
 class LocalTestCluster:
-    def __init__(self, bundle_manifest):
+    def __init__(self, bundle_manifest, work_dir):
         self.manifest = bundle_manifest
-        self.work_dir = tempfile.TemporaryDirectory()
+        self.work_dir = work_dir #tempfile.TemporaryDirectory()
 
     def override_location(self):
         artifact_download_url = 'file://' + os.getcwd() + '/test/resources/opensearch-1.0.0-linux-x64.tar.gz'

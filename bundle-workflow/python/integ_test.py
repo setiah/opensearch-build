@@ -13,6 +13,8 @@ from system.temporary_directory import TemporaryDirectory
 
 DEPENDENCY_VERSION = '1.0'
 
+#TODO: log test related logging into a log file. Output only workflow logs on shell.
+
 def _get_common_dependencies():
     return {
         'opensearch': DEPENDENCY_VERSION,
