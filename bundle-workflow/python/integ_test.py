@@ -87,7 +87,7 @@ def is_component_test_supported(component):
 def run_plugin_tests(manifest, component, work_dir):
     try:
         # Spin up a test cluster
-        cluster = LocalTestCluster(manifest)
+        cluster = LocalTestCluster(manifest, work_dir)
         cluster.create()
         print("plugin name: " + component.name)
         #TODO: (Create issue) Since plugins don't have integtest.sh in version branch, hardcoded it to main
