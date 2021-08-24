@@ -32,11 +32,11 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-#TODO: wip
-def _get_opensearch_component(manifest):
-    for component in manifest.components:
-        if component.name == 'OpenSearch':
-            return component
+# #TODO: wip
+# def _get_opensearch_component(manifest):
+#     for component in manifest.components:
+#         if component.name == 'OpenSearch':
+#             return component
 
 #TODO: wip, replace with DependencyProvider
 def pull_common_dependencies(work_dir):

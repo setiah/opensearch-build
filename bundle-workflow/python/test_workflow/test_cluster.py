@@ -10,7 +10,8 @@ class LocalTestCluster:
         self.work_dir = tempfile.TemporaryDirectory()
 
     def override_location(self):
-        self.manifest.build.location = 'file:///Users/setiah/projects/odfe/opensearch-build/test/resources/opensearch-1.0.0-linux-x64.tar.gz'
+        artifact_download_url = 'file://' + os.getcwd() + '/test/resources/opensearch-1.0.0-linux-x64.tar.gz'
+        self.manifest.build.location = artifact_download_url
 
     def create(self):
         print(f'Creating local test cluster in {self.work_dir.name}')
