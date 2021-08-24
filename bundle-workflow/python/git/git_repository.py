@@ -28,8 +28,12 @@ class GitRepository:
         self.execute(f'git init', True)
         print("Git repo url: " + self.url + " ref: " + self.ref)
         self.execute(f'git remote add origin {self.url}', True)
-        self.execute(f'git fetch --depth 1 origin main', True)
-        # self.execute(f'git fetch --depth 1 origin {self.ref}', True)
+        # if url == 'https://github.com/setiah/opensearch-build/':
+        #     print("pulling from testbranch for opensearch-build")
+        #     self.execute(f'git fetch --depth 1 origin testbranch', True)
+        # else:
+        #     self.execute(f'git fetch --depth 1 origin main', True)
+        self.execute(f'git fetch --depth 1 origin {self.ref}', True)
         self.execute(f'git checkout FETCH_HEAD', True)
         self.sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd = self.dir).decode().strip()
         print(f'Checked out {self.url}@{self.ref} into {self.dir} at {self.sha}')

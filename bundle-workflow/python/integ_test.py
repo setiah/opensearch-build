@@ -12,13 +12,15 @@ from test_workflow.integ_test_suite import IntegTestSuite
 from system.temporary_directory import TemporaryDirectory
 
 DEPENDENCY_VERSION = '1.0'
-common_dependencies = [
-    'opensearch',
-    'opensearch-build',
-    'common-utils',
-    'job-scheduler',
-    'alerting'
-]
+
+def _get_common_dependencies():
+    return {
+        'opensearch': DEPENDENCY_VERSION,
+        'opensearch-build': 'main',
+        'common-utils': DEPENDENCY_VERSION,
+        'job-scheduler': DEPENDENCY_VERSION,
+        'alerting': DEPENDENCY_VERSION
+    }
 
 def _get_dependency_repo(dep_name):
     return "https://github.com/opensearch-project/" + dep_name + ".git"
@@ -36,38 +38,45 @@ def _get_opensearch_component(manifest):
         if component.name == 'OpenSearch':
             return component
 
-#TODO: wip
+#TODO: wip, replace with DependencyProvider
 def pull_common_dependencies(work_dir):
-    for dependency in common_dependencies:
+    common_dependencies = _get_common_dependencies()
+    for dependency, branch in common_dependencies.items():
         print("pulling dependency: " + dependency)
-        GitRepository(_get_dependency_repo(dependency), DEPENDENCY_VERSION, os.path.join(work_dir, dependency))
-        #TODO: add the logic for copying dependencies in maven local
-        pass
+        GitRepository(_get_dependency_repo(dependency), branch, os.path.join(work_dir, dependency))
+        # if dependency == 'opensearch-build':
+            # TODO if this works, fix the snapshot logic
+            # print("pulling opensearch-build dependency from testbranch")
+            # GitRepository('https://github.com/setiah/opensearch-build/', 'testbranch', os.path.join(work_dir, dependency))
+        # else:
+        #     GitRepository(_get_dependency_repo(dependency), DEPENDENCY_VERSION, os.path.join(work_dir, dependency))
 
 def pull_plugin_repo(component, work_dir):
     GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
 
-def sync_maven_dependencies(component, work_dir):
+# TODO: replace with DependencyProvider
+def sync_maven_dependencies(component, work_dir, manifest_build_ver):
     os.chdir(work_dir + "/opensearch")
-    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh opensearch 1.1.0 ', shell=True)
+    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh opensearch ' + manifest_build_ver, shell=True)
 
     os.chdir(work_dir + '/common-utils')
-    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh common-utils 1.1.0 ', shell=True)
+    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh common-utils ' + manifest_build_ver, shell=True)
 
     os.chdir(work_dir)
     subprocess.run('mv -v job-scheduler ' + component.name, shell=True)
 
     os.chdir(work_dir + '/'+ component.name + '/job-scheduler')
-    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh job-scheduler 1.1.0 ', shell=True)
+    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh job-scheduler ' + manifest_build_ver, shell=True)
 
     os.chdir(work_dir)
     subprocess.run('mv alerting notifications', shell=True)
     os.chdir(work_dir + '/'+ '/notifications')
-    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh alerting 1.1.0 ', shell=True)
+    subprocess.run(work_dir + '/opensearch-build/tools/standard-test/integtest_dependencies_opensearch.sh alerting ' + manifest_build_ver, shell=True)
 
 
 def is_component_test_supported(component):
-    if component.name == 'anomaly-detection':
+    # if component.name == 'anomaly-detection':
+    if component.name == 'index-management':
         return True
     else:
         return False
@@ -104,7 +113,7 @@ def main():
                 print('Skipping tests for %s, as it is currently not supported' % component.name)
                 continue
             pull_plugin_repo(component, work_dir)
-            sync_maven_dependencies(component, work_dir)
+            sync_maven_dependencies(component, work_dir, manifest.build.version)
             run_plugin_tests(manifest, component, work_dir)
 
         # TODO: Store test results, send notification.
