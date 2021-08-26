@@ -13,7 +13,7 @@ from git.git_repository import GitRepository
 from manifests.bundle_manifest import BundleManifest
 from paths.script_finder import ScriptFinder
 from system.temporary_directory import TemporaryDirectory
-from test_workflow.integ_test_suite import IntegTestSuite
+from test_workflow.integ_test_workflow.integ_test_suite import IntegTestSuite
 from test_workflow.local_test_cluster import LocalTestCluster
 
 parser = argparse.ArgumentParser(description="Test an OpenSearch Bundle")

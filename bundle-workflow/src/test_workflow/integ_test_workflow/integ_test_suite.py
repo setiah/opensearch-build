@@ -17,7 +17,7 @@ class IntegTestSuite:
         script = self.script_finder.find_integ_test_script(self.name, self.repo.dir)
         if os.path.exists(script):
             self.repo.execute(
-                f"sh {script} -b {cluster.endpoint()} -p {cluster.port()} -s {str(security).lower()}"
+                f"{script} -b {cluster.endpoint()} -p {cluster.port()} -s {str(security).lower()}"
             )
         else:
             print(f"{script} does not exist. Skipping integ tests for {self.name}")
