@@ -17,7 +17,7 @@ from test_workflow.integ_test_workflow.integ_test_suite import IntegTestSuite
 from test_workflow.local_test_cluster import LocalTestCluster
 
 parser = argparse.ArgumentParser(description="Test an OpenSearch Bundle")
-parser.add_argument("manifest", type=argparse.FileType("r"), help="Manifest file.")
+parser.add_argument("--manifest", type=argparse.FileType("r"), help="Manifest file.")
 parser.add_argument(
     "--keep",
     dest="keep",
