@@ -21,6 +21,7 @@ class LocalTestCluster(TestCluster):
 
     def __init__(self, work_dir, bundle_manifest, security_enabled):
         self.manifest = bundle_manifest
+        self.manifest.build.location = 'file:///Users/setiah/Downloads/opensearch-1.1.0-linux-x64.tar.gz'
         self.work_dir = os.path.join(work_dir, "local-test-cluster")
         os.makedirs(self.work_dir, exist_ok=True)
         self.security_enabled = security_enabled
@@ -97,7 +98,7 @@ class LocalTestCluster(TestCluster):
         print("Waiting for service to become available")
         url = self.url("/_cluster/health")
 
-        for attempt in range(10):
+        for attempt in range(50):
             try:
                 print(f"Pinging {url} attempt {attempt}")
                 response = requests.get(url, verify=False, auth=("admin", "admin"))

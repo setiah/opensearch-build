@@ -19,36 +19,6 @@ from manifests.bundle_manifest import BundleManifest
 # TODO: 2. Move common functions to utils.py
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser(description="Test an OpenSearch Bundle")
-    parser.add_argument('--bundle-manifest', type=argparse.FileType('r'), help="Bundle Manifest file.")
-    parser.add_argument('--build-manifest', type=argparse.FileType('r'), help="Build Manifest file.")
-    parser.add_argument('--keep', dest='keep', action='store_true',
-                        help="Do not delete the working temporary directory.")
-    args = parser.parse_args()
-    return args
-
-
-# def _get_common_dependencies():
-#     return {
-#         'opensearch': DEPENDENCY_VERSION,
-#         'opensearch-build': 'main',
-#         'common-utils': DEPENDENCY_VERSION,
-#         'job-scheduler': DEPENDENCY_VERSION,
-#         'alerting': DEPENDENCY_VERSION
-#     }
-
-
-def _get_common_dependencies():
-    return [
-        'opensearch',
-        'opensearch-build',
-        'common-utils',
-        'job-scheduler',
-        'alerting'
-    ]
-
-
 # TODO: replace with DependencyProvider - https://github.com/opensearch-project/opensearch-build/issues/283
 def pull_common_dependencies(work_dir, build_manifest):
     common_dependencies = _get_common_dependencies()
