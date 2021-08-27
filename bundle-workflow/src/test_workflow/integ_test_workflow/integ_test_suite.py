@@ -58,7 +58,6 @@ class IntegTestSuite:
             cluster = LocalTestCluster(self.work_dir, self.bundle_manifest, security)
             cluster.create()
             print("component name: " + self.component.name)
-            import pdb; pdb.set_trace()
             os.chdir(self.work_dir)
             # TODO: (Create issue) Since plugins don't have integtest.sh in version branch, hardcoded it to main
             # repo = GitRepository(component.repository, component.commit_id, os.path.join(work_dir, component.name))
