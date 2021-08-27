@@ -23,9 +23,9 @@ class IntegTestSuite:
         self.work_dir = work_dir
         self.test_config = test_config
         self.script_finder = ScriptFinder()
+        self.repo = GitRepository(self.component.repository, self.component.commit_id, os.path.join(self.work_dir, self.component.name))
 
     def execute(self):
-        GitRepository(self.component.repository, self.component.commit_id, os.path.join(self.work_dir, self.component.name))
         self._fetch_plugin_specific_dependencies()
         for config in self.test_config.integ_test['test-configs']:
             self._setup_cluster_and_execute_test_config(config)
@@ -67,7 +67,7 @@ class IntegTestSuite:
             cluster.destroy()
 
     def _execute_integtest_sh(self, cluster, security):
-        script = self.script_finder.find_integ_test_script(self.name, self.repo.dir)
+        script = self.script_finder.find_integ_test_script(self.component.name, self.repo.dir)
         if os.path.exists(script):
             self.repo.execute(
                 f"{script} -b {cluster.endpoint()} -p {cluster.port()} -s {str(security).lower()}"
