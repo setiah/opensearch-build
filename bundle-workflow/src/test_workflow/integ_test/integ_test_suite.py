@@ -22,11 +22,12 @@ class IntegTestSuite:
     test_support_matrix.yml
     """
 
-    def __init__(self, component, test_config, bundle_manifest, work_dir):
+    def __init__(self, component, test_config, bundle_manifest, work_dir, s3_bucket_name):
         self.component = component
         self.bundle_manifest = bundle_manifest
         self.work_dir = work_dir
         self.test_config = test_config
+        self.s3_bucket_name = s3_bucket_name
         self.script_finder = ScriptFinder()
         self.test_recorder = TestRecorder(os.path.dirname(bundle_manifest.name))
         self.repo = GitRepository(
@@ -79,7 +80,7 @@ class IntegTestSuite:
         security = self._is_security_enabled(config)
         try:
             # Spin up a test cluster
-            cluster = LocalTestCluster(self.work_dir, self.bundle_manifest, security)
+            cluster = LocalTestCluster(self.work_dir, self.bundle_manifest, security, self.s3_bucket_name)
             cluster.create()
             logging.info("component name: " + self.component.name)
             os.chdir(self.work_dir)
