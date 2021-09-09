@@ -139,8 +139,8 @@ def main():
         for component in test_manifest.components:
             if component.integ_test is not None:
                 integ_test_config[component.name] = component
-        pull_common_dependencies(work_dir, build_manifest)
-        sync_dependencies_to_maven_local(work_dir, build_manifest.build.version)
+        # pull_common_dependencies(work_dir, build_manifest)
+        # sync_dependencies_to_maven_local(work_dir, build_manifest.build.version)
         for component in bundle_manifest.components:
             if component.name in integ_test_config.keys():
                 test_suite = IntegTestSuite(

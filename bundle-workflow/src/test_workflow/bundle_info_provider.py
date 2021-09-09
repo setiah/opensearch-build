@@ -14,6 +14,10 @@ class BundleInfoProvider:
         return f"bundles/{opensearch_version}/{build_id}/{architecture}/opensearch-{opensearch_version}-linux-{architecture}.tar.gz"
 
     @staticmethod
+    def get_tarball_name(opensearch_version, architecture):
+        return f"opensearch-{opensearch_version}-linux-{architecture}.tar.gz"
+
+    @staticmethod
     def get_bundle_manifest_relative_location(build_id, opensearch_version, architecture):
         return f"bundles/{opensearch_version}/{build_id}/{architecture}/manifest.yml"
 

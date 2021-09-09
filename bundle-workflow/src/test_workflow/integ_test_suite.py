@@ -37,7 +37,7 @@ class IntegTestSuite:
         )
 
     def execute(self):
-        self._fetch_plugin_specific_dependencies()
+        # self._fetch_plugin_specific_dependencies()
         for config in self.test_config.integ_test["test-configs"]:
             self._setup_cluster_and_execute_test_config(config)
 

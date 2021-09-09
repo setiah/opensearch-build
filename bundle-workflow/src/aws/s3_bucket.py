@@ -95,6 +95,7 @@ class S3Bucket:
         :param key: The s3 key for the object to download
         :param dest: local destination
         """
+        print("download_file: " + key)
         bucket = self.__s3_resource.Bucket(self.bucket_name)
         local_dir = Path(dest)
         file_name = key.split("/")[-1]

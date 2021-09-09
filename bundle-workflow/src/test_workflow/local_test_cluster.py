@@ -16,6 +16,7 @@ import requests
 from paths.tree_walker import walk
 from test_workflow.test_cluster import ClusterCreationException, TestCluster
 from aws.s3_bucket import S3Bucket
+from test_workflow.bundle_info_provider import BundleInfoProvider
 
 
 class LocalTestCluster(TestCluster):
@@ -77,9 +78,12 @@ class LocalTestCluster(TestCluster):
         logging.info(f"Creating local test cluster in {self.work_dir}")
         os.chdir(self.work_dir)
         logging.info(f"Downloading bundle from {self.manifest.build.location}")
-        parsed_url = urllib.parse.urlparse(self.manifest.build.location)
-        s3bucket.download_file(parsed_url.path.lstrip('/'), self.work_dir)
-        bundle_name = parsed_url.path.split('/')[-1]
+        # parsed_url = urllib.parse.urlparse(self.manifest.build.location)
+        # parsed_url.path.lstrip('/')
+        s3_path = BundleInfoProvider.get_tarball_relative_location(self.manifest.build.id, self.manifest.build.version, self.manifest.build.architecture)
+        s3bucket.download_file(s3_path, self.work_dir)
+        # bundle_name = parsed_url.path.split('/')[-1]
+        bundle_name = BundleInfoProvider.get_tarball_name(self.manifest.build.version, self.manifest.build.architecture)
         # urllib.request.urlretrieve(self.manifest.build.location, "bundle.tgz")
         logging.info(f'Downloaded bundle to {os.path.realpath(bundle_name)}')
         logging.info("Unpacking")
