@@ -15,6 +15,7 @@ import requests
 
 from paths.tree_walker import walk
 from test_workflow.test_cluster import ClusterCreationException, TestCluster
+from aws.s3_bucket import S3Bucket
 
 
 class LocalTestCluster(TestCluster):
@@ -22,7 +23,8 @@ class LocalTestCluster(TestCluster):
     Represents an on-box test cluster. This class downloads a bundle (from a BundleManifest) and runs it as a background process.
     """
 
-    def __init__(self, work_dir, bundle_manifest, security_enabled):
+    def __init__(self, work_dir, bundle_manifest, security_enabled, s3_bucket):
+        self.s3_bucket = s3_bucket
         self.manifest = bundle_manifest
         self.work_dir = os.path.join(work_dir, "local-test-cluster")
         os.makedirs(self.work_dir, exist_ok=True)
@@ -52,33 +54,36 @@ class LocalTestCluster(TestCluster):
     def port(self):
         return 9200
 
-    def destroy(self, test_recorder):
+    def destroy(self):
         if self.process is None:
             logging.info("Local test cluster is not started")
             return
         self.terminate_process()
-        test_recorder.record_cluster_logs(
-            itertools.chain(
-                [
-                    (os.path.realpath(self.stdout.name), "stdout"),
-                    (os.path.realpath(self.stderr.name), "stderr"),
-                ],
-                walk(os.path.join(self.install_dir, "logs")),
-            )
-        )
+        # test_recorder.record_cluster_logs(
+        #     itertools.chain(
+        #         [
+        #             (os.path.realpath(self.stdout.name), "stdout"),
+        #             (os.path.realpath(self.stderr.name), "stderr"),
+        #         ],
+        #         walk(os.path.join(self.install_dir, "logs")),
+        #     )
+        # )
 
     def url(self, path=""):
         return f'{"https" if self.security_enabled else "http"}://{self.endpoint()}:{self.port()}{path}'
 
     def download(self):
+        s3bucket = S3Bucket(self.s3_bucket)
         logging.info(f"Creating local test cluster in {self.work_dir}")
         os.chdir(self.work_dir)
         logging.info(f"Downloading bundle from {self.manifest.build.location}")
-        urllib.request.urlretrieve(self.manifest.build.location, "bundle.tgz")
-        logging.info(f'Downloaded bundle to {os.path.realpath("bundle.tgz")}')
-
+        parsed_url = urllib.parse.urlparse(self.manifest.build.location)
+        s3bucket.download_file(parsed_url.path.lstrip('/'), self.work_dir)
+        bundle_name = parsed_url.path.split('/')[-1]
+        # urllib.request.urlretrieve(self.manifest.build.location, "bundle.tgz")
+        logging.info(f'Downloaded bundle to {os.path.realpath(bundle_name)}')
         logging.info("Unpacking")
-        subprocess.check_call("tar -xzf bundle.tgz", shell=True)
+        subprocess.check_call(f"tar -xzf {bundle_name}", shell=True)
         logging.info("Unpacked")
 
     def disable_security(self, dir):

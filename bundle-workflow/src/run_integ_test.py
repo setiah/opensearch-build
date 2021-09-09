@@ -117,6 +117,7 @@ def main():
     console.configure(level=args.logging_level)
     integ_test_config = dict()
     s3bucket = S3Bucket(args.s3_bucket)
+    script_dir = str(os.getcwd())
     with TemporaryDirectory(keep=args.keep) as work_dir:
         logging.info("Switching to temporary work_dir: " + work_dir)
         os.chdir(work_dir)
@@ -125,14 +126,16 @@ def main():
             args.opensearch_version,
             args.architecture)
         s3bucket.download_file(bundle_manifest_path, work_dir)
-        import pdb; pdb.set_trace()
-        bundle_manifest = BundleManifest.from_file('manifest.yml')
+        with open('manifest.yml', 'r') as file:
+            bundle_manifest = BundleManifest.from_file(file)
         build_manifest_path = BundleInfoProvider.get_build_manifest_relative_location(args.build_id,
                                                                                       args.opensearch_version,
                                                                                       args.architecture)
         s3bucket.download_file(build_manifest_path, work_dir)
-        build_manifest = BuildManifest.from_file('manifest.yml')
-        test_manifest = TestManifest.from_file('config/test_manifest.yml')
+        with open('manifest.yml', 'r') as file:
+            build_manifest = BuildManifest.from_file(file)
+        with open(script_dir + '/src/test_workflow/config/test_manifest.yml', 'r') as file:
+            test_manifest = TestManifest.from_file(file)
         for component in test_manifest.components:
             if component.integ_test is not None:
                 integ_test_config[component.name] = component
@@ -145,6 +148,7 @@ def main():
                     integ_test_config[component.name],
                     bundle_manifest,
                     work_dir,
+                    args.s3_bucket
                 )
                 test_suite.execute()
             else:

@@ -13,7 +13,7 @@ from paths.script_finder import ScriptFinder
 from paths.tree_walker import walk
 from system.execute import execute
 from test_workflow.local_test_cluster import LocalTestCluster
-from test_workflow.test_recorder import TestRecorder
+# from test_workflow.test_recorder import TestRecorder
 
 
 class IntegTestSuite:
@@ -22,13 +22,14 @@ class IntegTestSuite:
     test_support_matrix.yml
     """
 
-    def __init__(self, component, test_config, bundle_manifest, work_dir):
+    def __init__(self, component, test_config, bundle_manifest, work_dir, s3_bucket):
+        self.s3_bucket = s3_bucket
         self.component = component
         self.bundle_manifest = bundle_manifest
         self.work_dir = work_dir
         self.test_config = test_config
         self.script_finder = ScriptFinder()
-        self.test_recorder = TestRecorder(os.path.dirname(bundle_manifest.name))
+        # self.test_recorder = TestRecorder("integ-test")
         self.repo = GitRepository(
             self.component.repository,
             self.component.commit_id,
@@ -79,7 +80,7 @@ class IntegTestSuite:
         security = self._is_security_enabled(config)
         try:
             # Spin up a test cluster
-            cluster = LocalTestCluster(self.work_dir, self.bundle_manifest, security)
+            cluster = LocalTestCluster(self.work_dir, self.bundle_manifest, security, self.s3_bucket)
             cluster.create()
             logging.info("component name: " + self.component.name)
             os.chdir(self.work_dir)
@@ -98,9 +99,9 @@ class IntegTestSuite:
             results_dir = os.path.join(
                 self.repo.dir, "integ-test", "build", "reports", "tests", "integTest"
             )
-            self.test_recorder.record_integ_test_outcome(
-                self.name, status, stdout, stderr, walk(results_dir)
-            )
+            # self.test_recorder.record_integ_test_outcome(
+            #     self.name, status, stdout, stderr, walk(results_dir)
+            # )
         else:
             logging.info(
                 f"{script} does not exist. Skipping integ tests for {self.name}"
