@@ -105,6 +105,15 @@ This workflow contains two sections: Integration Tests, Backwards Compatibility 
 
 This step runs integration tests invoking `integtest.sh` in each component from bundle manifest.
 
+To run integration tests locally, use below command. It pulls down the built bundle and its manifest file from S3,
+reads all components of the bundle and runs integration tests against each component.
+ 
+```
+cd opensearch-build/bundle-workflow
+pipenv install
+pipenv shell
+python src/run_integ_test.py --s3-bucket <bucket_name> --opensearch-version <version> --build-id <id> --architecture <arch>
+```
 #### Backwards Compatibility Tests
 
 This step run backward compatibility invoking `bwctest.sh` in each component from bundle manifest.

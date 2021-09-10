@@ -106,7 +106,10 @@ def sync_dependencies_to_maven_local(work_dir, manifest_build_ver):
 def main():
     args = parse_arguments()
     console.configure(level=args.logging_level)
-    test_manifest = TestManifest.from_file(args.test_manifest)
+    script_dir = str(os.getcwd())
+    test_manifest_path = ("%s%s" % (script_dir, '/src/test_workflow/config/test_manifest.yml'))
+    with open(test_manifest_path, 'r') as file:
+        test_manifest = TestManifest.from_file(file)
     integ_test_config = dict()
     for component in test_manifest.components:
         if component.integ_test is not None:
@@ -115,9 +118,9 @@ def main():
         logging.info("Switching to temporary work_dir: " + work_dir)
         os.chdir(work_dir)
         bundle_manifest = BundleManifestProvider.load_manifest(
-            args.s3_bucket, args.opensearch_version, args.architecture)
+            args.s3_bucket, args.build_id, args.opensearch_version, args.architecture)
         build_manifest = BuildManifestProvider.load_manifest(
-            args.s3_bucket, args.opensearch_version, args.architecture)
+            args.s3_bucket, args.build_id, args.opensearch_version, args.architecture)
         pull_common_dependencies(work_dir, build_manifest)
         sync_dependencies_to_maven_local(work_dir, build_manifest.build.version)
         for component in bundle_manifest.components:
