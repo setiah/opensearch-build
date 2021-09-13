@@ -22,7 +22,7 @@ function usage() {
     echo "--------------------------------------------------------------------------"
 }
 
-while getopts ":hb:p:s:c:" arg; do
+while getopts ":hb:p:s:c:v:n" arg; do
     case $arg in
         h)
             usage
@@ -76,7 +76,7 @@ fi
 
 if [ -z "$IS_SNAPSHOT" ]
 then
-  $IS_SNAPSHOT="false"
+  IS_SNAPSHOT="false"
 fi
 
 if [ -z "$CREDENTIAL" ]
