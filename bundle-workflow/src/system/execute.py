@@ -16,7 +16,6 @@ def execute(command, dir, capture=True, raise_on_failure=True):
     :returns a tuple containing the exit code, stdout, and stderr.
     """
     logging.info(f'Executing "{command}" in {dir}')
-    import pdb; pdb.set_trace()
     result = subprocess.run(
         command, cwd=dir, shell=True, capture_output=capture, text=True
     )

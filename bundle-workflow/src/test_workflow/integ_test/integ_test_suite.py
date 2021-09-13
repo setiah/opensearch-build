@@ -41,7 +41,6 @@ class IntegTestSuite:
     # TODO: fetch pre-built dependencies from s3
     def _fetch_plugin_specific_dependencies(self):
         os.chdir(self.work_dir)
-        import pdb; pdb.set_trace()
         subprocess.run(
             "cp opensearch-build/bundle-workflow/scripts/default/integtest.sh " + self.component.name, shell=True, check=True
         )
