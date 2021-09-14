@@ -27,7 +27,7 @@ class GitRepository:
         else:
             self.temp_dir = None
             self.dir = directory
-            os.makedirs(self.dir)
+            os.makedirs(self.dir, exist_ok=True)
 
         # Check out the repository
         self.working_subdirectory = working_subdirectory
