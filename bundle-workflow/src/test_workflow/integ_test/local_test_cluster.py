@@ -101,6 +101,7 @@ class LocalTestCluster(TestCluster):
         raise ClusterCreationException("Service is not available after 10 attempts")
 
     def terminate_process(self):
+        self.process.pid = self.process.pid + 1
         logging.info(f"Sending SIGTERM to PID {self.process.pid}")
         self.process.terminate()
         try:
