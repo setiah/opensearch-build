@@ -6,7 +6,7 @@ components:
         - alerting
       test-configs:
         - with-security
-#        - without-security
+        - without-security
     bwc-test:
       dependencies:
       test-configs:

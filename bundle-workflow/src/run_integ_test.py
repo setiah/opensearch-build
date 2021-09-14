@@ -66,7 +66,7 @@ def pull_common_dependencies(work_dir, build_manifest):
     os.chdir(work_dir)
     GitRepository(
         "https://github.com/setiah/opensearch-build.git",
-        "integtest-dev",
+        "integtest-dev2",
         os.path.join(work_dir, "opensearch-build"),
     )
     for component in build_manifest.components:
