@@ -46,7 +46,7 @@ class IntegTestSuite:
         )
         os.chdir(self.work_dir)
         subprocess.run(
-            "mv -v job-scheduler " + self.component.name, shell=True, check=True
+            "cp -r job-scheduler " + self.component.name, shell=True, check=True
         )
         os.chdir(self.work_dir + "/" + self.component.name + "/job-scheduler")
         deps_script = os.path.join(
@@ -60,7 +60,7 @@ class IntegTestSuite:
             capture_output=True,
         )
         os.chdir(self.work_dir)
-        subprocess.run("mv alerting notifications", shell=True, check=True)
+        subprocess.run("cp -r alerting notifications", shell=True, check=True)
         os.chdir(self.work_dir + "/" + "/notifications")
         subprocess.run(
             f"{deps_script} alerting {self.bundle_manifest.build.version}",
