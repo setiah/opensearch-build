@@ -19,6 +19,9 @@ def execute(command, dir, capture=True, raise_on_failure=True):
     result = subprocess.run(
         command, cwd=dir, shell=True, capture_output=capture, text=True
     )
+    logging.info("DEBUG LOGS")
+    logging.info(result.stdout)
+    logging.info(result.stderr)
     if raise_on_failure:
         result.check_returncode()
     return (result.returncode, result.stdout, result.stderr)
