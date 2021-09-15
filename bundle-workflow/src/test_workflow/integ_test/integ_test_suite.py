@@ -87,7 +87,7 @@ class IntegTestSuite:
         )
         import pdb; pdb.set_trace()
         if os.path.exists(script):
-            cmd = f".{script} -b {endpoint} -p {port} -s {str(security).lower()} -v {self.bundle_manifest.build.version}"
+            cmd = f"{script} -b {endpoint} -p {port} -s {str(security).lower()} -v {self.bundle_manifest.build.version}"
             (status, stdout, stderr) = execute(cmd, self.repo.dir, True, False)
         else:
             logging.info(
