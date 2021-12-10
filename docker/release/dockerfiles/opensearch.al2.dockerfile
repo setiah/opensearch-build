@@ -106,4 +106,4 @@ LABEL org.label-schema.schema-version="1.0" \
   org.label-schema.build-date="$BUILD_DATE"
 
 # CMD to run
-CMD ["./opensearch-docker-entrypoint.sh"]
+ENTRYPOINT ["./opensearch-docker-entrypoint.sh"]
