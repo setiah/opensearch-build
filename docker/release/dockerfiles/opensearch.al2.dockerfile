@@ -25,7 +25,8 @@ ARG PERFORMANCE_ANALYZER_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-performa
 # Update packages
 # Install the tools we need: tar and gzip to unpack the OpenSearch tarball, and shadow-utils to give us `groupadd` and `useradd`.
 # Install which to allow running of securityadmin.sh
-RUN yum update -y && yum install -y tar gzip shadow-utils which && yum clean all
+# TODO(remove) Reference https://github.com/CentOS/CentOS-Dockerfiles/blob/master/earthquake/centos6/Dockerfile
+RUN yum update -y && yum install -y tar gzip shadow-utils which openssl && yum clean all
 
 # Create an opensearch user, group, and directory
 RUN groupadd -g $GID opensearch && \

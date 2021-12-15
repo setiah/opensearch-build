@@ -21,8 +21,8 @@ function usage() {
 
 function do_certificates_exist() {
   echo ""
-  echo "Checking if certificates exist"
-  if [ -f "$OPENSEARCH_HOME/config/kirk.pem" ]; then
+  echo -e "Checking if certificates exist."
+  if [ -f "$OPENSEARCH_HOME/config/*.pem" ]; then
     # return $(true)
     true; return
   else
@@ -48,7 +48,7 @@ while getopts ":hg" option; do
 done
 
 # Export OpenSearch Home
-export OPENSEARCH_HOME=/usr/share/opensearch
+export OPENSEARCH_HOME=`pwd` #/usr/share/opensearch
 
 # Files created by OpenSearch should always be group writable too
 umask 0002
@@ -92,6 +92,12 @@ done < <(env)
 # that cgroup statistics are available for the container this process
 # will run in.
 export OPENSEARCH_JAVA_OPTS="-Dopensearch.cgroups.hierarchy.override=/ $OPENSEARCH_JAVA_OPTS"
+
+if ([ do_certificates_exist ]); then
+      echo "Generating and installing new self-signed certificates..."
+      # TODO(#1633) Replace this with certs-manager tool in auto mode. Pending on #1633
+      bash $OPENSEARCH_HOME/plugins/$SECURITY_PLUGIN/tools/install_demo_configuration.sh -y -i -s
+fi
 
 ##Security Plugin
 SECURITY_PLUGIN="opensearch-security"
