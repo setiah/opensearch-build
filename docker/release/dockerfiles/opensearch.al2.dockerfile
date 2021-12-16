@@ -26,7 +26,7 @@ ARG PERFORMANCE_ANALYZER_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-performa
 # Install the tools we need: tar and gzip to unpack the OpenSearch tarball, and shadow-utils to give us `groupadd` and `useradd`.
 # Install which to allow running of securityadmin.sh
 # TODO(remove) Reference https://github.com/CentOS/CentOS-Dockerfiles/blob/master/earthquake/centos6/Dockerfile
-RUN yum update -y && yum install -y tar gzip shadow-utils which openssl && yum clean all
+RUN yum update -y && yum install -y tar gzip shadow-utils which && yum clean all
 
 # Create an opensearch user, group, and directory
 RUN groupadd -g $GID opensearch && \
@@ -86,7 +86,7 @@ USER $UID
 # Enable security plugin during image build, and allow user to disable during startup of the container
 ARG DISABLE_INSTALL_DEMO_CONFIG=true
 ARG DISABLE_SECURITY_PLUGIN=false
-RUN ./opensearch-onetime-setup.sh
+#RUN ./opensearch-onetime-setup.sh
 
 # Expose ports for the opensearch service (9200 for HTTP and 9300 for internal transport) and performance analyzer (9600 for the agent and 9650 for the root cause analysis component)
 EXPOSE 9200 9300 9600 9650
